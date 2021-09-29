@@ -1,0 +1,24 @@
+ETAPE1:------------------------------------------------------------------------
+
+un programme se fini pas un point d'arret, ou un illegal
+un sous programme se termine par un rts
+
+une etiquette sans \ est une etiquette absolue, il ne peut pas y en avoir 2 du meme nom dans le meme fichier
+
+une etiquette avec un \ est une etiquette relative. \quit dans Abs est alors Abs\quit.
+
+ca permet de pouvoir avoir plusieurs etiquettes du meme noms dans le meme fichier source, car abc\quit est different de cba\quit.
+
+[f11] permet une execution pas a pas et [f11] permet une execution pas a pas sauf pour les sous programmes qu'elle execute d'une traite
+
+ETAPE2:------------------------------------------------------------------------
+regle: AUCUN REGISTRE DE DONNEE OU D'ADRESSE NE DEVRA ETRE MODIFIE EN SORTIE D'UN SOUS PROGRAMME
+cela ne signifie pas qu’un sous-programme n’a pas le droit de modifier n’importe quels registres de donnée ou d’adresse. Cela signifie qu’au moment de l’exécution de l’instruction RTS, les registres qui ne sont pas des registres de sorties devront posséder la même valeur qu’au moment de l’appel au sous-programme.
+
+c'est pour cela que dans StrlLen, on copie la valeur de a0 avant de la modifier, et a avant la fin de l'exection, on lui redonne sa valeur d'origine.
+
+a7 est le registre pour les piles (cours)
+
+ici il permet de garder en memoire a0. on utilise une boucle pour compter la longeur des 2 chaines de carateres, et on stock les tours de boucle dans d0, qui est incremente de 1 a chque tour
+ETAPE3:------------------------------------------------------------------------
+
