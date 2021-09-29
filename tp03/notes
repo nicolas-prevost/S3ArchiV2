@@ -1,3 +1,18 @@
+IMPORTANT:
+
+le registre A7 est le seule registre pile
+
+-(a7) pour empiler
+(a7)+ pour depiler
+
+BEQ = branchement equal zero
+NEQ = branchement not equal zero
+
+DC = define constante
+
+JSP = jump to sub routine (sauter a un sous programme)
+
+
 ETAPE1:------------------------------------------------------------------------
 
 un programme se fini pas un point d'arret, ou un illegal
