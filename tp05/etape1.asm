@@ -6,6 +6,7 @@
 
 Vector_000	dc.l	$ffb500
 Vector_001	dc.l	Main
+PrintChar   incbin  "PrintChar.bin"
 
 ; ======================================================================
 ; Programme principal
@@ -97,8 +98,60 @@ IsMAxError	movem.l	d0/a0,-(a7)
 
 \quit		movem.l (a7)+,d0/a0
 			rts
+			
+;CONVERT
+Convert		movem.l	a0,-(a7)
+			tst.l	(a0)
+			beq		\error
+			IsCharError
+			beq		\error
+			IsMaxerror
+			beq		\error
+			
+			; Sauvegarde les registres dans la pile.
+            movem.l d1/a0,-(a7)
+            
+            ; Initialise la variable de retour à 0.            
+            clr.l   d0
+            
+            ; Initialise la variable de conversion à 0.            
+            clr.l   d1
+            
+\loop       ; On copie le caractère courant dans D1            
+			; A0 pointe ensuite sur le caractère suivant (post incrémentation).            
+			move.b  (a0)+,d1
+			
+            ; Si le caractère copié est nul,            
+            ; on quitte (fin de chaîne).            
+            beq     \quit
+            
+            ; Sinon, on réalise la conversion numérique du caractère.            
+            subi.b  #'0',d1
+            
+            ; On décale la variable de retour vers la gauche (x10),
+            ; puis on y ajoute la valeur numérique du caractère.            
+            mulu.w  #10,d0            
+            add.l   d1,d0
+            
+            ; Passage au caractère suivant.            
+            bra     \loop
+            
+\quit       ; Restaure les registres puis sortie.  
+			andi.b	#%11111011,ccr
+			movem.l (a7)+,d1/a0            
+			rts		
+
+			
+			
+			
+			
+\error 		ori.b   #%00000100,ccr 	;flag a 0
+			movem.l (a7)+,a0
+			rts
+
+			
 ; ======================================================================
 ; Donnees
 ; ======================================================================
 
-sTest		dc.b	"Hello World",0
+sTest		dc.b	"156",0
