@@ -5,11 +5,11 @@
                     ; Mémoire vidéo                    
                     ; ------------------------------
                     
-VIDEO_START         equ     $ffb500                         ; Adresse de départVIDEO_WIDTH         
-					equ     480                             ; Largeur en pixelsVIDEO_HEIGHT        
-					equ     320                             ; Hauteur en pixelsVIDEO_SIZE          
-					equ     (VIDEO_WIDTH*VIDEO_HEIGHT/8)    ; Taille en octetsBYTE_PER_LINE       
-					equ     (VIDEO_WIDTH/8)                 ; Nombre d'octets par ligne
+VIDEO_START         equ     $ffb500                         ; Adresse de départ
+VIDEO_WIDTH         equ     480                             ; Largeur en pixels
+VIDEO_HEIGHT        equ     320                             ; Hauteur en pixels
+VIDEO_SIZE          equ     (VIDEO_WIDTH*VIDEO_HEIGHT/8)    ; Taille en octets
+BYTE_PER_LINE       equ     (VIDEO_WIDTH/8)                 ; Nombre d'octets par ligne
                     ; ==============================                    
                     ; Initialisation des vecteurs                    
                     ; ==============================
@@ -23,7 +23,8 @@ vector_001			dc.l    Main                            ; Valeur initiale du PC
                     ; ==============================
                     
                     org     $500
-Main                ; ...                    
+Main                move.l  #$0,d0                    
+					jsr     FillScreen
 					; ...                    
 					; ...
 					
@@ -33,9 +34,40 @@ Main                ; ...
                     ; Sous-programmes                    
                     ; ==============================
                     
-                    ; ...                    
-                    ; ...                    
-                    ; ...
+FillScreen			;FFB500 -> FFFFFF (video memory)
+					lea			VIDEO_START,A0					;move VIDEO_START
+
+\loop				move.l		D0,(a0)+
+					cmp.l		#$FFFFFC,A0
+					bhi			\quit
+					
+					bra			\loop
+\quit				rts
+
+
+;======================================================================
+
+
+HLines				lea			VIDEO_START,A0
+					move.l		d0,d1,-(A7)
+					clr.l		d0
+					clr.l		d1
+					
+\loop				bra			\color
+					move.l		D0,(a0)+
+					cmp.l		#$FFFFFC,A0
+					bhi			\quit
+					bra			\loop
+
+\color				cmp.l		#120,d1
+					bra			\change
+					addi.l		#1,d1
+\change				not			d0
+					move.l		#0,d1
+					rts
+					
+\quit				move.l		(a7)+,d0,d1
+					rts
                     
                     ; ==============================                    
                     ; Données                    
